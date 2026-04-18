@@ -26,39 +26,22 @@ As a result:
 - **Non-reproducible**: assumptions may not generalize
 - **Misaligned with proposal**: violates intended evaluation design (temporal vs subject separation)
 
-## Consequences
-
-- CT may not reflect true temporal generalization
-- CP may mix subject and temporal effects incorrectly
-- Results become unreliable and difficult to interpret
-
-## Research Question
-
-How can we redesign or adapt evaluation paradigms given missing stage information while preserving meaningful generalization testing?
-
-## Possible Directions
-
-### Option 1: Recover Stage Information
-- Investigate metadata / raw files for hidden session indicators
-- Use timestamps, trial ordering, or recording batches
-
-### Option 2: Approximate Temporal Splits
-- Artificially split time series into early vs late segments
-- Use change point detection to define "pseudo-stages"
-
-### Option 3: Redefine Evaluation Metrics
-- Replace CT with:
-  - temporal robustness metrics
-  - sliding-window generalization
-- Replace CP with:
-  - leave-one-subject-out (LOSO)
-
-### Option 4: Switch Dataset
-- Use datasets with explicit session/stage annotations
-- Ensure alignment with CrossPT-style evaluation
-
-## Key Open Question
+## Open Question
 
 Is it more valuable to:
 1. Preserve the original evaluation paradigm (requires correct stage labels), or  
 2. Redesign evaluation metrics to match the available data?
+
+## Proposed New Evaluation Protocol: Temporal Split Approximation (TSA)
+
+- **WT**: Keep the current within-time protocol and evaluation metric.
+
+- **CP**: Replace the current workaround with **Leave-One-Subject-Out (LOSO)**:
+  - Train on all subjects except one
+  - Test on the held-out subject
+
+- **CT**: Replace stage-based cross-time evaluation with **within-trial temporal transfer**:
+  - Train on an early EEG window and test on a later EEG window
+  - Or train on segment A and test on segment B within the same trial
+
+This redesign preserves the original intent of evaluating temporal and subject generalization, while avoiding unreliable stage inference from file names.
